@@ -1,0 +1,12 @@
+syntax = "proto3"
+
+package habits;
+option go_package = "habits/api"
+
+message Habit {
+    // name of habit
+    string name = 1;
+
+    // expressed in times per week
+    int32 weekly_frequency = 2;
+}

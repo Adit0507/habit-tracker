@@ -1,0 +1,22 @@
+syntax = "proto3"
+
+package habits
+option go_package = "habits/api"
+
+// serivice for registering and tracking habits
+service Habits {
+    rpc CreateHabit(CreateHabitRequest) returns (CreateHabitResponse); 
+}
+
+// message sent to create a habit
+message CreateHabitRequest{
+    string name = 1;
+
+    // frequency of the new habit, will default to once per week
+    optional int32 weekly_frequency = 2;
+}
+
+// response of the create endpoint
+message CreateHabitResponse {
+    Habit habit = 1;
+}
