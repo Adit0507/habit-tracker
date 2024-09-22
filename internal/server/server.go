@@ -29,7 +29,7 @@ func (s *Server) ListenAndServe(port int) error {
 	// combines host & port into a network address
 	listener, err := net.Listen("tcp", net.JoinHostPort(addr, strconv.Itoa(port)))
 	if err != nil {
-		return fmt.Errorf("unable to listen to tcp port:%d: %w", port, err)
+		return fmt.Errorf("unable to listen to tcp port %d: %w", port, err)
 	}
 
 	grpcServer := grpc.NewServer()
