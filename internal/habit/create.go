@@ -20,7 +20,9 @@ func Create(ctx context.Context, db habitCreator, h Habit) (Habit, error) {
 		return Habit{}, err
 	}
 
-	err = db.Add(ctx, h)
+	dbCtx, cancel := context.WithTimeout(ctx, time.Second)
+	defer cancel()
+	err = db.Add(dbCtx, h)
 	if err != nil {
 		return Habit{}, fmt.Errorf("cannot save habit: %w", err)
 	}
