@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"errors"
+	"fmt"
 	"habits/api"
 	"habits/internal/habit"
 
@@ -10,9 +11,26 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+func validateCreateHabitRequest(request *api.CreateHabitRequest) error {
+	switch {
+	case request == nil:
+		return fmt.Errorf("empty request")
+	case request.Name == "":
+		return fmt.Errorf("missing name of habit")
+	}
+	return nil
+}
+
 func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitRequest) (*api.CreateHabitResponse, error) {
+	s.lgr.Logf("Create request recieved: %s", request)
+
+	err := validateCreateHabitRequest(request)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request: "+err.Error())
+	}
+
 	var freq uint
-	if request.WeeklyFrequency != nil {
+	if request.WeeklyFrequency != nil && uint(*request.WeeklyFrequency) > 0 {
 		freq = uint(*request.WeeklyFrequency)
 	}
 
@@ -21,7 +39,7 @@ func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitReques
 		WeeklyFrequency: habit.WeeklyFrequency(freq),
 	}
 
-	createdHabit, err := habit.Create(ctx, s.db,h)
+	createdHabit, err := habit.Create(ctx, s.db, h)
 	if err != nil {
 		var invalidErr habit.InvalidInputError
 		if errors.As(err, &invalidErr) {
