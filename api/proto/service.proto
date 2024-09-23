@@ -2,13 +2,23 @@ syntax  = "proto3";
 
 package habits;
 
-import "habit.proto";`
+import "habit.proto";
 option go_package = "habits/api";
 
 service Habits {
     rpc CreateHabit(CreateHabitRequest) returns (CreateHabitResponse);
     rpc ListHabits(ListHabitsRequest) returns (ListHabitsResponse);
+    rpc TicketHabit(TicketHabitRequest) returns (TicketHabitResponse);
 }
+
+message TickHabitRequest {
+    string habit_id = 1;
+}
+
+message TickHabitResponse { 
+
+}
+
 
 message ListHabitsRequest {
 
