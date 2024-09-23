@@ -1,8 +1,10 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"habits/api"
+	"habits/internal/habit"
 	"net"
 	"strconv"
 
@@ -13,13 +15,20 @@ type Logger interface {
 	Logf(format string, args ...any)
 }
 
+type Repository interface {
+	Add(ctx context.Context, habit habit.Habit) error
+	FindAll(ctx context.Context) ([]habit.Habit, error)
+}
+
 type Server struct {
 	api.UnimplementedHabitsServer
 	lgr Logger
+	db Repository
 }
 
-func New(lgr Logger) *Server {
+func New(repo Repository ,lgr Logger) *Server {
 	return &Server{
+		db: repo,
 		lgr: lgr,
 	}
 }

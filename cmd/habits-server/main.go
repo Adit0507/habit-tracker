@@ -1,8 +1,11 @@
 package main
 
 import (
-	"habits/internal/server"
 	"habits/internal/log"
+	"habits/internal/repository"
+	"habits/internal/server"
+
+	// "habits/internal/repository"
 	"os"
 )
 
@@ -10,7 +13,8 @@ const port = 28710
 
 func main() {
 	lgr := log.New(os.Stdout)
-	srv := server.New(lgr) 
+	db := repository.New(lgr)
+	srv := server.New(db, lgr) 
 	
 	err := srv.ListenAndServe(port)
 	if err != nil {
