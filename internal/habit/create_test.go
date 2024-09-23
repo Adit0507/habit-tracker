@@ -44,6 +44,23 @@ func TestCreate(t *testing.T) {
 			},
 			expectedErr: dbErr,
 		},
+		"db timeout": {
+			db: func(ctl *minimock.Controller) *mocks.HabitCreatorMock {
+				db := mocks.NewHabitCreatorMock(ctl)
+				db.AddMock.Set(
+					func(ctx context.Context, habit habit.Habit) error {
+						select {
+						// This tick is longer than a database call
+						case <-time.Tick(2 * time.Second):
+							return nil
+						case <-ctx.Done():
+							return ctx.Err()
+						}
+					})
+				return db
+			},
+			expectedErr: context.DeadlineExceeded, 
+		},
 	}
 
 	for name, tt := range tests {
