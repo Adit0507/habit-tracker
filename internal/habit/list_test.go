@@ -82,3 +82,10 @@ func TestListHabits(t *testing.T) {
 	}
 }
 
+type MockList struct {
+	Items []habit.Habit
+	Err error
+}
+func (ls MockList) FindAll(context.Context) ([]habit.Habit, error) {
+	return ls.Items, ls.Err
+}
