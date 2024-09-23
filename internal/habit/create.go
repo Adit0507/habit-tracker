@@ -2,16 +2,26 @@ package habit
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"time"
 
 	"github.com/google/uuid"
 )
 
-func Create(ctx context.Context, h Habit) (Habit, error) {
+type habitCreator interface {
+	Add(ctx context.Context, habit Habit) error
+}
+
+func Create(ctx context.Context, db habitCreator, h Habit) (Habit, error) {
 	h, err := validateAndFillDetails(h)
 	if err != nil {
 		return Habit{}, err
+	}
+
+	err = db.Add(ctx, h)
+	if err != nil {
+		return Habit{}, fmt.Errorf("cannot save habit: %w", err)
 	}
 
 	return h, nil

@@ -21,14 +21,14 @@ func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitReques
 		WeeklyFrequency: habit.WeeklyFrequency(freq),
 	}
 
-	createdHabit, err := habit.Create(ctx, h)
+	createdHabit, err := habit.Create(ctx, s.db,h)
 	if err != nil {
 		var invalidErr habit.InvalidInputError
 		if errors.As(err, &invalidErr) {
 			return nil, status.Error(codes.InvalidArgument, invalidErr.Error())
 		}
 
-		return nil, status.Errorf(codes.InvalidArgument, invalidErr.Error())
+		return nil, status.Errorf(codes.Internal, invalidErr.Error())
 	}
 
 	s.lgr.Logf("Habit %s successfully registered", createdHabit.ID)
