@@ -3,16 +3,30 @@ syntax  = "proto3";
 package habits;
 
 import "habit.proto";
+import "google/protobuf/timestamp.proto";
 option go_package = "habits/api";
 
 service Habits {
     rpc CreateHabit(CreateHabitRequest) returns (CreateHabitResponse);
     rpc ListHabits(ListHabitsRequest) returns (ListHabitsResponse);
-    rpc TicketHabit(TicketHabitRequest) returns (TicketHabitResponse);
+    rpc TickHabit(TickHabitRequest) returns (TickHabitResponse);
+    rpc GetHabitStatus(GetHabitStatusRequest) returns (GetHabitStatusResponse);
+}
+
+message GetHabitStatusRequest {
+    string habit_id = 1;
+    optional google.protobuf.Timestamp timestamp = 2;
+}
+
+message GetHabitStatusResponse {
+    Habit habit = 1;
+    int32 ticks_count =2;
 }
 
 message TickHabitRequest {
     string habit_id = 1;
+
+    google.protobuf.Timestamp timestamp =2;
 }
 
 message TickHabitResponse { 

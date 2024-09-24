@@ -8,6 +8,7 @@ import (
 	"net"
 	_ "net/http/pprof"
 	"strconv"
+	"time"
 
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
@@ -21,6 +22,10 @@ type Logger interface {
 type Repository interface {
 	Add(ctx context.Context, habit habit.Habit) error
 	FindAll(ctx context.Context) ([]habit.Habit, error)
+	Find(ctx context.Context, id habit.ID) (habit.Habit, error)
+	AddTick(ctx context.Context,id habit.ID, t time.Time) error
+	FindAllTicks(ctx context.Context, id habit.ID) ([]time.Time, error) 
+	FindWeeklyTicks(ctx context.Context, id habit.ID, t time.Time) ([]time.Time, error)
 }
 
 type Server struct {
